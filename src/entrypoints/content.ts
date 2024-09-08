@@ -1,4 +1,4 @@
-import { parseMicroformat, timeToSec } from "@/components/microformat";
+import { parseMicroformat, timeToSec } from "@/utils/microformat";
 
 export default defineContentScript({
   matches: ["*://*.youtube.com/*"],

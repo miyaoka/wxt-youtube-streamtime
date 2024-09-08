@@ -1,3 +1,4 @@
+import { debug } from "@/utils/debug";
 import { parseMicroformat, timeToSec } from "@/utils/microformat";
 
 export default defineContentScript({
@@ -13,16 +14,16 @@ export default defineContentScript({
       startTimeEl.textContent = "";
       if (currentTimeObserver) {
         currentTimeObserver.disconnect();
-        console.log("🕒👀 /end watch currentTime");
+        debug("🕒👀 /end watch currentTime");
       }
     }
 
     // setup live timer by using microformat data and current time
     async function setupLiveTimer(el: Element) {
-      console.log("🕒💥 setup live timer.");
+      debug("🕒💥 setup live timer.");
       resetLiveTimer();
       const microformat = parseMicroformat(el);
-      console.log("🕒 parse microformat data:", microformat);
+      debug("🕒 parse microformat data:", microformat);
       if (!microformat) return;
       const timeWrapper =
         document.querySelector<HTMLElement>(".ytp-time-wrapper");
@@ -30,24 +31,24 @@ export default defineContentScript({
       const timeCurrent =
         timeWrapper.querySelector<HTMLElement>(".ytp-time-current");
       if (!timeCurrent) return;
-      console.log("🕒 time elements found.");
+      debug("🕒 time elements found.");
 
       if (!document.contains(originalTimeEl)) {
         timeWrapper.appendChild(originalTimeEl);
-        console.log("🕒 added originalTime el.");
+        debug("🕒 added originalTime el.");
       }
       if (!document.contains(startTimeEl)) {
         timeWrapper.insertBefore(startTimeEl, timeWrapper.firstChild);
-        console.log("🕒 added startTime el.");
+        debug("🕒 added startTime el.");
       }
 
       const publication = microformat.publication?.[0];
       // not live
       if (!publication) {
-        console.log("🕒 [non-live video]");
+        debug("🕒 [non-live video]");
         return;
       }
-      console.log("🕒 has publication:", publication);
+      debug("🕒 has publication:", publication);
 
       const startDate = new Date(publication.startDate);
 
@@ -61,7 +62,7 @@ export default defineContentScript({
         });
         const startTime = dateFormatter.format(startDate);
         startTimeEl.textContent = `${startTime} + `;
-        console.log("🕒 [live now or scheduled]", startDate);
+        debug("🕒 [live now or scheduled]", startDate);
         return;
       }
 
@@ -97,10 +98,7 @@ export default defineContentScript({
       currentTimeObserver.observe(timeCurrent, {
         childList: true,
       });
-      console.log(
-        "🕒 [archived live video] 👀start watch currentTime",
-        timeCurrent
-      );
+      debug("🕒 [archived live video] 👀start watch currentTime", timeCurrent);
     }
 
     async function watchMicroformat(microformatEl: Element) {
@@ -115,14 +113,14 @@ export default defineContentScript({
         childList: true,
         subtree: true,
       });
-      console.log("🕒👀 start watch microformat node:", microformatEl);
+      debug("🕒👀 start watch microformat node:", microformatEl);
 
       // Initial execution
       setupLiveTimer(microformatEl);
     }
 
     function init() {
-      console.log("🕒💥 init");
+      debug("🕒💥 init");
       // force display current time
       const style = document.createElement("style");
       style.textContent = ".ytp-time-current { display: inline !important; }";
@@ -130,7 +128,7 @@ export default defineContentScript({
 
       const microformatEl = document.getElementById("microformat");
       if (microformatEl) {
-        console.log("🕒 found microformat node.");
+        debug("🕒 found microformat node.");
         watchMicroformat(microformatEl);
         return;
       }
@@ -151,7 +149,7 @@ export default defineContentScript({
 
           // finish watching
           observer.disconnect();
-          console.log("🕒👀 found microformat node. /end watch document");
+          debug("🕒👀 found microformat node. /end watch document");
           // start watching microformat node
           watchMicroformat(microformatNode as Element);
           return;
@@ -161,7 +159,7 @@ export default defineContentScript({
         childList: true,
         subtree: true,
       });
-      console.log("🕒👀 start watch document");
+      debug("🕒👀 start watch document");
     }
 
     init();

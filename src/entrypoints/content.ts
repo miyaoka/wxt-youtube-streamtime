@@ -4,6 +4,7 @@ import { parseMicroformat, timeToSec } from "@/utils/microformat";
 export default defineContentScript({
   matches: ["*://*.youtube.com/*"],
   main() {
+    setDebugMode(true);
     // add span for displaying original time
     const originalTimeEl = document.createElement("span");
     const startTimeEl = document.createElement("span");

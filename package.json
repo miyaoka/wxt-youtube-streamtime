@@ -1,6 +1,6 @@
 {
-  "name": "wxt-starter",
-  "description": "manifest.json description",
+  "name": "wxt-youtube-streamtime",
+  "description": "Display Actual Streaming Time for YouTube Live Archives",
   "private": true,
   "version": "0.0.0",
   "type": "module",

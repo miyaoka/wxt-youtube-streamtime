@@ -1,6 +1,23 @@
 import { debug } from "@/utils/debug";
 import { parseMicroformat, timeToSec } from "@/utils/microformat";
 
+// HH:MM:SS
+const startTimeFormatter = new Intl.DateTimeFormat(undefined, {
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+// ymd + weekday + time
+const originalDateFormatter = new Intl.DateTimeFormat(undefined, {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  weekday: "short",
+});
+
 export default defineContentScript({
   matches: ["*://*.youtube.com/*"],
   main() {
@@ -55,13 +72,7 @@ export default defineContentScript({
 
       // on live, only add the start time
       if (!publication.endDate) {
-        // HH:MM:SS
-        const dateFormatter = new Intl.DateTimeFormat(undefined, {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        });
-        const startTime = dateFormatter.format(startDate);
+        const startTime = startTimeFormatter.format(startDate);
         startTimeEl.textContent = `${startTime} + `;
         debug("🕒 [live now or scheduled]", startDate);
         return;
@@ -69,19 +80,12 @@ export default defineContentScript({
 
       // on ended, add the original time
 
-      // ymd + weekday + time
-      const dateFormatter = new Intl.DateTimeFormat(undefined, {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        weekday: "short",
-      });
-
       // watch current time and update original time
       currentTimeObserver = new MutationObserver((mutationsList) => {
+        console.log(
+          "🕒 [archived live video] currentTime mutation:",
+          mutationsList
+        );
         for (const mutation of mutationsList) {
           // When the time is updated, a node is added
           const addedNode = mutation.addedNodes[0];
@@ -92,7 +96,7 @@ export default defineContentScript({
           const originalDate = new Date(
             startDate.getTime() + currentSec * 1000
           );
-          const formattedDate = dateFormatter.format(originalDate);
+          const formattedDate = originalDateFormatter.format(originalDate);
           originalTimeEl.textContent = ` ( ${formattedDate} )`;
         }
       });

@@ -128,7 +128,8 @@ export default defineContentScript({
       debug("🕒💥 init");
       // force display current time
       const style = document.createElement("style");
-      style.textContent = ".ytp-time-current { display: inline !important; }";
+      style.textContent =
+        ".ytp-time-contents, .ytp-time-current { display: inline !important; }";
       document.documentElement.appendChild(style);
 
       const microformatEl = document.getElementById("microformat");

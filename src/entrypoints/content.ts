@@ -82,9 +82,9 @@ export default defineContentScript({
 
       // watch current time and update original time
       currentTimeObserver = new MutationObserver((mutationsList) => {
-        console.log(
+        debug(
           "🕒 [archived live video] currentTime mutation:",
-          mutationsList
+          mutationsList,
         );
         for (const mutation of mutationsList) {
           // When the time is updated, a node is added

@@ -1,6 +1,7 @@
 import { debug, setDebugMode } from "@/utils/debug";
 import { parseYouTubeMicroformat, timeToSec } from "@/utils/microformat";
 import { defineContentScript } from "wxt/utils/define-content-script";
+import "./style.css";
 
 // 配信開始時刻表示用フォーマッター（例: 20:30:45）
 const streamStartTimeFormatter = new Intl.DateTimeFormat(undefined, {
@@ -171,12 +172,6 @@ export default defineContentScript({
 		 */
 		function initializeExtension() {
 			debug("🕒💥 拡張機能を初期化します");
-
-			// YouTube動画プレーヤーの現在時刻を強制的に表示
-			const style = document.createElement("style");
-			style.textContent =
-				".ytp-time-contents, .ytp-time-current { display: inline !important; }";
-			document.documentElement.appendChild(style);
 
 			const youTubeMicroformatElement = document.getElementById("microformat");
 			if (youTubeMicroformatElement) {

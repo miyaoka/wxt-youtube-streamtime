@@ -24,21 +24,27 @@ Displays the exact broadcast timestamp corresponding to your current playback po
 
 **Display format:** `[Current position] / [Total duration] ( [Original broadcast timestamp] )`
 
-## Installation
+## Environment Setup
 
 ```bash
-# Install dependencies
-pnpm install
+# Install bun runtime
+mise install
+# Install project dependencies
+bun install
+```
 
+## Browser Extension Installation
+
+```bash
 # Build for Chrome (or Firefox)
-pnpm run build # or pnpm run build:firefox
+bun run build # or bun run build:firefox
 ```
 
 1. Open your browser's extension management page
 2. Enable "Developer mode"
 3. Click "Load unpacked" and select the `.output/chrome-mv3/` directory (or `.output/firefox-mv2/` for Firefox)
 
-## Usage
+### Usage
 
 1. Install the extension
 2. Navigate to any YouTube live video or its archive
@@ -51,21 +57,15 @@ pnpm run build # or pnpm run build:firefox
 ## Development
 
 ```bash
-# Install dependencies
-pnpm install
-
-# Setup VSCode (recommended)
-# Copy shared settings to your personal settings
-cp .vscode/settings-shared.json .vscode/settings.json
-
 # Development with hot reload for Chrome (or Firefox)
-pnpm run dev # or pnpm run dev:firefox
+bun run dev # or bun run dev:firefox
 ```
 
 **VSCode Users:**
 
 1. Install the recommended extensions when prompted
-2. The shared settings will enable Biome as the default formatter
+2. Copy shared settings to your personal settings: `cp .vscode/settings-shared.json .vscode/settings.json`
+3. The shared settings will enable Biome as the default formatter
 
 ## How It Works
 

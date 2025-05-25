@@ -1,11 +1,11 @@
 import { debug, setDebugMode } from "@/utils/debug";
-import { parseYouTubeMicroformat } from "@/utils/microformat";
 import { createArchiveTimeObserver, setupLiveDisplay } from "./display";
 import { addDisplayElements, getVideoTimeElements } from "./dom";
 import {
 	createInitializationObserver,
 	createMicroformatObserver,
 } from "./observers";
+import { parseYouTubeMicroformat } from "./parser";
 
 // モジュールレベルで状態を管理
 // 元の配信時の日時を表示するspan要素（アーカイブ動画用）

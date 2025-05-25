@@ -20,6 +20,6 @@
 		"@biomejs/biome": "^1.9.4",
 		"@wxt-dev/auto-icons": "^1.0.2",
 		"typescript": "^5.5.4",
-		"wxt": "^0.19.1"
+		"wxt": "^0.20.6"
 	}
 }

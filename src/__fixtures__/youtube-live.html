@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YouTube Live Test</title>
+  </head>
+  <body>
+    <div id="microformat">
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          "name": "Live Stream Test",
+          "description": "Test live streaming video",
+          "duration": "PT0S",
+          "embedUrl": "https://www.youtube.com/embed/test123",
+          "interactionCount": "1000",
+          "thumbnailUrl": ["https://i.ytimg.com/vi/test123/maxresdefault.jpg"],
+          "uploadDate": "2023-01-01T00:00:00Z",
+          "genre": "Entertainment",
+          "author": "Test Channel",
+          "publication": [
+            {
+              "@type": "BroadcastEvent",
+              "isLiveBroadcast": true,
+              "startDate": "2023-01-01T00:00:00Z"
+            }
+          ]
+        }
+      </script>
+    </div>
+  </body>
+</html>

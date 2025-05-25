@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YouTube Archived Live Test</title>
+  </head>
+  <body>
+    <div id="microformat">
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          "name": "Archived Live Stream Test",
+          "description": "Test archived live streaming video",
+          "duration": "PT3600S",
+          "embedUrl": "https://www.youtube.com/embed/test456",
+          "interactionCount": "5000",
+          "thumbnailUrl": ["https://i.ytimg.com/vi/test456/maxresdefault.jpg"],
+          "uploadDate": "2023-01-01T00:00:00Z",
+          "genre": "Entertainment",
+          "author": "Test Channel",
+          "publication": [
+            {
+              "@type": "BroadcastEvent",
+              "isLiveBroadcast": true,
+              "startDate": "2023-01-01T00:00:00Z",
+              "endDate": "2023-01-01T01:00:00Z"
+            }
+          ]
+        }
+      </script>
+    </div>
+  </body>
+</html>

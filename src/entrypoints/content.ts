@@ -41,9 +41,12 @@ export default defineContentScript({
 		async function setupLiveTimer(el: Element) {
 			debug("🕒💥 setup live timer.");
 			resetLiveTimer();
-			const microformat = parseMicroformat(el);
+			const { value: microformat, error } = parseMicroformat(el);
 			debug("🕒 parse microformat data:", microformat);
-			if (!microformat) return;
+			if (error) {
+				debug("🕒 error parsing microformat:", error);
+				return;
+			}
 			const timeWrapper =
 				document.querySelector<HTMLElement>(".ytp-time-wrapper");
 			if (!timeWrapper) return;
@@ -61,18 +64,18 @@ export default defineContentScript({
 				debug("🕒 added startTime el.");
 			}
 
-			const publication = microformat.publication?.[0];
 			// not live
-			if (!publication) {
+			if (!("publication" in microformat)) {
 				debug("🕒 [non-live video]");
 				return;
 			}
+			const publication = microformat.publication;
 			debug("🕒 has publication:", publication);
 
 			const startDate = new Date(publication.startDate);
 
 			// on live, only add the start time
-			if (!publication.endDate) {
+			if (!("endDate" in publication)) {
 				const startTime = startTimeFormatter.format(startDate);
 				startTimeEl.textContent = `${startTime} + `;
 				debug("🕒 [live now or scheduled]", startDate);

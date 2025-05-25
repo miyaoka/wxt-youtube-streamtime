@@ -1,6 +1,6 @@
 let isDebugMode = import.meta.env.DEV;
 
-export function debug(...args: any[]): void {
+export function debug(...args: unknown[]): void {
   if (isDebugMode) {
     console.log(...args);
   }

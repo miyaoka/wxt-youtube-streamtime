@@ -47,3 +47,15 @@ jobs:
       - uses: ./.github/actions/setup-bun
       # TypeScriptの型チェック実行
       - run: bun run typecheck
+
+  # テスト実行
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      # リポジトリのチェックアウト
+      - uses: actions/checkout@v4
+      # Bun環境の共通セットアップ
+      - uses: ./.github/actions/setup-bun
+      # テスト実行
+      - run: bun test

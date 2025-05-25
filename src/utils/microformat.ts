@@ -1,6 +1,8 @@
 import { type Result, tryCatch } from "./result";
 
-// 基本的な共通フィールド
+/**
+ * YouTubeマイクロフォーマットの基本的な共通フィールド
+ */
 interface BaseMicroFormat {
 	"@context": string;
 	"@type": string;
@@ -15,66 +17,98 @@ interface BaseMicroFormat {
 	author: string;
 }
 
-// Publication の基本フィールド
+/**
+ * ライブ配信のpublication基本フィールド
+ */
 interface BasePublication {
 	"@type": string;
 	isLiveBroadcast: true;
 	startDate: string;
 }
 
-// ライブ配信中（endDateなし）
+/**
+ * 現在配信中のライブ配信（endDateなし）
+ */
 interface LiveBroadcast extends BasePublication {}
 
-// アーカイブ済みライブ配信（endDateあり）
+/**
+ * アーカイブ済みライブ配信（endDateあり）
+ */
 interface ArchivedBroadcast extends BasePublication {
 	endDate: string;
 }
 
-// 各状態のMicroFormat
+/**
+ * ライブ配信中の動画のマイクロフォーマット
+ */
 type LiveStreamMicroFormat = BaseMicroFormat & {
 	publication: LiveBroadcast;
 };
 
+/**
+ * アーカイブ済みライブ配信の動画のマイクロフォーマット
+ */
 type ArchivedLiveStreamMicroFormat = BaseMicroFormat & {
 	publication: ArchivedBroadcast;
 };
 
-type NormalVideoMicroFormat = BaseMicroFormat; // publicationなし
+/**
+ * 通常の動画のマイクロフォーマット（publicationなし）
+ */
+type NormalVideoMicroFormat = BaseMicroFormat;
 
-// ユニオン型
+/**
+ * YouTubeのマイクロフォーマットデータの型定義
+ * ライブ配信、アーカイブ配信、通常動画のいずれかの形式
+ */
 export type MicroFormat =
 	| LiveStreamMicroFormat
 	| ArchivedLiveStreamMicroFormat
 	| NormalVideoMicroFormat;
 
-// parse microformat from script tag
-export function parseMicroformat(el: Element): Result<MicroFormat, Error> {
-	const script = el.querySelector("script");
-	const textContent = script?.textContent;
+/**
+ * YouTubeのmicroformat要素からマイクロフォーマットデータを解析する
+ * @param microformatElement YouTubeページのmicroformat要素
+ * @returns 解析されたマイクロフォーマットデータまたはエラー
+ */
+export function parseYouTubeMicroformat(
+	microformatElement: Element,
+): Result<MicroFormat, Error> {
+	const scriptElement = microformatElement.querySelector("script");
+	const jsonTextContent = scriptElement?.textContent;
 
-	if (!textContent) {
+	if (!jsonTextContent) {
 		return { error: new Error("Script tag or textContent not found") };
 	}
 
-	const parseResult = tryCatch(() => JSON.parse(textContent));
-	if (parseResult.error) {
-		return parseResult;
+	const jsonParseResult = tryCatch(() => JSON.parse(jsonTextContent));
+	if (jsonParseResult.error) {
+		return jsonParseResult;
 	}
 
-	const rawData = parseResult.value;
+	const parsedMicroformatData = jsonParseResult.value;
 
 	// JSON-LD仕様ではpublicationは配列として定義されているが、
 	// YouTubeの実装では常に1つの要素のみが含まれる。
 	// 扱いやすさのため、配列の最初の要素を取り出して単一オブジェクトに変換する。
-	if (rawData.publication && Array.isArray(rawData.publication)) {
-		rawData.publication = rawData.publication[0];
+	if (
+		parsedMicroformatData.publication &&
+		Array.isArray(parsedMicroformatData.publication)
+	) {
+		parsedMicroformatData.publication = parsedMicroformatData.publication[0];
 	}
 
-	return { value: rawData };
+	return { value: parsedMicroformatData };
 }
 
-// Convert timeText to seconds
-export function timeToSec(time: string) {
-	const [sec, min, hour] = time.split(":").reverse();
-	return Number(hour ?? 0) * 3600 + Number(min ?? 0) * 60 + Number(sec ?? 0);
+/**
+ * 時間文字列（HH:MM:SS形式）を秒数に変換する
+ * @param timeString 時間文字列（例: "1:23:45" または "5:30"）
+ * @returns 秒数
+ */
+export function timeToSec(timeString: string): number {
+	const [seconds, minutes, hours] = timeString.split(":").reverse();
+	return (
+		Number(hours ?? 0) * 3600 + Number(minutes ?? 0) * 60 + Number(seconds ?? 0)
+	);
 }

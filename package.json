@@ -1,6 +1,6 @@
 {
 	"name": "wxt-youtube-streamtime",
-	"description": "Display Actual Streaming Time for YouTube Live Archives",
+	"description": "A browser extension that displays actual streaming time for YouTube live broadcasts and their archives.",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",

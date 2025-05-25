@@ -1,21 +1,49 @@
+# コード品質検証ワークフロー
+# プルリクエスト時にBiomeによるコード品質チェックとTypeScriptの型チェックを並列実行
 name: Code Validation
 
 on:
-  pull_request:
+  pull_request: # プルリクエスト作成・更新時にトリガー
 
 jobs:
+  # 変更されたファイルパスを検出
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      typescript: ${{ steps.changes.outputs.typescript }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            typescript:
+              - '**/*.ts'
+              - '**/*.tsx'
+              - 'tsconfig.json'
+
+  # Biomeによるコード品質チェック（構文・スタイル・リント）
   biome-check:
     name: Biome Check
     runs-on: ubuntu-latest
     steps:
+      # リポジトリのチェックアウト
       - uses: actions/checkout@v4
-      - uses: jdx/mise-action@v2
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-      - run: bun install
+      # Bun環境の共通セットアップ
+      - uses: ./.github/actions/setup-bun
+      # Biomeによるコード品質チェック実行
       - run: bun run check
+
+  # TypeScriptの型チェック（TypeScript関連ファイル変更時のみ実行）
+  typecheck:
+    name: TypeScript Check
+    needs: changes
+    if: ${{ needs.changes.outputs.typescript == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      # リポジトリのチェックアウト
+      - uses: actions/checkout@v4
+      # Bun環境の共通セットアップ
+      - uses: ./.github/actions/setup-bun
+      # TypeScriptの型チェック実行
+      - run: bun run typecheck

@@ -1,6 +1,9 @@
 import { debug } from "@/utils/debug";
 import { timeToSec } from "@/utils/microformat";
-import { streamStartTimeFormatter, originalBroadcastDateTimeFormatter } from "./formatters";
+import {
+	originalBroadcastDateTimeFormatter,
+	streamStartTimeFormatter,
+} from "./formatters";
 
 /**
  * ライブ配信用の開始時刻表示を設定する
@@ -9,7 +12,10 @@ import { streamStartTimeFormatter, originalBroadcastDateTimeFormatter } from "./
  * @param streamStartDate 配信開始日時
  * @param streamElement 配信開始時刻を表示するHTML要素
  */
-export function setupLiveDisplay(streamStartDate: Date, streamElement: HTMLElement): void {
+export function setupLiveDisplay(
+	streamStartDate: Date,
+	streamElement: HTMLElement,
+): void {
 	const startTime = streamStartTimeFormatter.format(streamStartDate);
 	streamElement.textContent = `${startTime} + `;
 	debug("🕒 [ライブ配信中または配信予定]", streamStartDate);
@@ -24,7 +30,7 @@ export function setupLiveDisplay(streamStartDate: Date, streamElement: HTMLEleme
  */
 export function createArchiveTimeObserver(
 	streamStartDate: Date,
-	originalElement: HTMLElement
+	originalElement: HTMLElement,
 ): MutationObserver {
 	return new MutationObserver((mutationsList) => {
 		debug("🕒 [アーカイブ動画] 再生時間が変更されました:", mutationsList);
@@ -32,9 +38,7 @@ export function createArchiveTimeObserver(
 			const addedNode = mutation.addedNodes[0];
 			if (!addedNode) continue;
 
-			const currentVideoTimeInSeconds = timeToSec(
-				addedNode.textContent ?? "",
-			);
+			const currentVideoTimeInSeconds = timeToSec(addedNode.textContent ?? "");
 			const originalBroadcastDate = new Date(
 				streamStartDate.getTime() + currentVideoTimeInSeconds * 1000,
 			);

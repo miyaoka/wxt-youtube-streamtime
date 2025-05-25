@@ -1,8 +1,11 @@
 import { debug, setDebugMode } from "@/utils/debug";
 import { parseYouTubeMicroformat } from "@/utils/microformat";
-import { getVideoTimeElements, addDisplayElements } from "./dom";
-import { setupLiveDisplay, createArchiveTimeObserver } from "./display";
-import { createMicroformatObserver, createInitializationObserver } from "./observers";
+import { createArchiveTimeObserver, setupLiveDisplay } from "./display";
+import { addDisplayElements, getVideoTimeElements } from "./dom";
+import {
+	createInitializationObserver,
+	createMicroformatObserver,
+} from "./observers";
 
 // モジュールレベルで状態を管理
 // 元の配信時の日時を表示するspan要素（アーカイブ動画用）
@@ -39,7 +42,7 @@ function initializeExtension() {
 		// 発見したmicroformat要素の継続監視を開始
 		monitorMicroformatChanges(microformatNode);
 	});
-	
+
 	// document.body配下でYTD-WATCH-FLEXY要素の追加を監視
 	// YouTubeの動的読み込みによりmicroformat要素が後から追加されるのを待つ
 	observer.observe(document.body, {
@@ -54,11 +57,9 @@ function initializeExtension() {
  * 新しいデータが読み込まれた際にリアルタイム表示を更新する
  * @param youTubeMicroformatElement YouTubeのmicroformat要素
  */
-async function monitorMicroformatChanges(
-	youTubeMicroformatElement: Element,
-) {
+async function monitorMicroformatChanges(youTubeMicroformatElement: Element) {
 	const observer = createMicroformatObserver(() =>
-		setupRealTimeDisplay(youTubeMicroformatElement)
+		setupRealTimeDisplay(youTubeMicroformatElement),
 	);
 	observer.observe(youTubeMicroformatElement, {
 		childList: true,
@@ -93,7 +94,11 @@ async function setupRealTimeDisplay(microformatElement: Element) {
 	if (!elements) return;
 	debug("🕒 YouTube時間表示要素を見つけました");
 
-	addDisplayElements(elements.wrapper, originalBroadcastTimeDisplayElement, streamStartTimeDisplayElement);
+	addDisplayElements(
+		elements.wrapper,
+		originalBroadcastTimeDisplayElement,
+		streamStartTimeDisplayElement,
+	);
 
 	// 通常の動画（ライブ配信ではない）の場合は何もしない
 	if (!("publication" in microformat)) {
@@ -112,14 +117,14 @@ async function setupRealTimeDisplay(microformatElement: Element) {
 	}
 
 	// アーカイブ動画の場合：動画の再生時間に基づいて実際の日時を表示
-	videoTimeChangeObserver = createArchiveTimeObserver(streamStartDate, originalBroadcastTimeDisplayElement);
+	videoTimeChangeObserver = createArchiveTimeObserver(
+		streamStartDate,
+		originalBroadcastTimeDisplayElement,
+	);
 	videoTimeChangeObserver.observe(elements.current, {
 		childList: true,
 	});
-	debug(
-		"🕒 [アーカイブ動画] 👀時間変更監視を開始しました",
-		elements.current,
-	);
+	debug("🕒 [アーカイブ動画] 👀時間変更監視を開始しました", elements.current);
 }
 
 /**

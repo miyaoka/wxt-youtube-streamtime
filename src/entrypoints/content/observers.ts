@@ -7,7 +7,7 @@ import { isElement } from "./types";
  * @returns 設定済みのMutationObserver
  */
 export function createMicroformatObserver(
-	setupFunction: () => void
+	setupFunction: () => void,
 ): MutationObserver {
 	return new MutationObserver((mutationsList) => {
 		for (const mutation of mutationsList) {
@@ -25,18 +25,16 @@ export function createMicroformatObserver(
  * @returns 設定済みのMutationObserver
  */
 export function createInitializationObserver(
-	onMicroformatFound: (element: Element) => void
+	onMicroformatFound: (element: Element) => void,
 ): MutationObserver {
 	return new MutationObserver((mutationsList) => {
 		for (const mutation of mutationsList) {
 			const target = mutation.target;
 			if (!isElement(target) || target.tagName !== "YTD-WATCH-FLEXY") continue;
 
-			const microformatNode = Array.from(mutation.addedNodes).find(
-				(node) => {
-					return isElement(node) && node.id === "microformat";
-				},
-			);
+			const microformatNode = Array.from(mutation.addedNodes).find((node) => {
+				return isElement(node) && node.id === "microformat";
+			});
 			if (!microformatNode || !isElement(microformatNode)) continue;
 
 			onMicroformatFound(microformatNode);

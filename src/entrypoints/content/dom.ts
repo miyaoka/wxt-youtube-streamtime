@@ -4,13 +4,16 @@ import { debug } from "@/utils/debug";
  * YouTube動画プレーヤーの時間表示関連要素を取得する
  * @returns 時間表示要素のオブジェクト。要素が見つからない場合はnull
  */
-export function getVideoTimeElements(): { wrapper: HTMLElement; current: HTMLElement } | null {
+export function getVideoTimeElements(): {
+	wrapper: HTMLElement;
+	current: HTMLElement;
+} | null {
 	const wrapper = document.querySelector<HTMLElement>(".ytp-time-wrapper");
 	if (!wrapper) return null;
-	
+
 	const current = wrapper.querySelector<HTMLElement>(".ytp-time-current");
 	if (!current) return null;
-	
+
 	return { wrapper, current };
 }
 
@@ -23,7 +26,7 @@ export function getVideoTimeElements(): { wrapper: HTMLElement; current: HTMLEle
 export function addDisplayElements(
 	wrapper: HTMLElement,
 	originalElement: HTMLElement,
-	streamElement: HTMLElement
+	streamElement: HTMLElement,
 ): void {
 	if (!document.contains(originalElement)) {
 		wrapper.appendChild(originalElement);

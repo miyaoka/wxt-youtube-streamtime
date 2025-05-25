@@ -8,7 +8,7 @@ import youtubeLiveHtml from "../__fixtures__/youtube-live.html" with {
 import youtubeNormalHtml from "../__fixtures__/youtube-normal.html" with {
 	type: "text",
 };
-import { parseMicroformat, timeToSec } from "./microformat";
+import { parseYouTubeMicroformat, timeToSec } from "./microformat";
 
 function getMicroformatElement(htmlContent: string): Element {
 	const parser = new DOMParser();
@@ -51,10 +51,10 @@ describe("timeToSec", () => {
 	});
 });
 
-describe("parseMicroformat", () => {
+describe("parseYouTubeMicroformat", () => {
 	test("ライブ配信中のマイクロフォーマットを正しく解析する", () => {
 		const microformatEl = getMicroformatElement(youtubeLiveHtml);
-		const { value, error } = parseMicroformat(microformatEl);
+		const { value, error } = parseYouTubeMicroformat(microformatEl);
 		if (error) {
 			throw new Error(`Parse failed: ${error.message}`);
 		}
@@ -75,7 +75,7 @@ describe("parseMicroformat", () => {
 
 	test("アーカイブ済みライブ配信のマイクロフォーマットを正しく解析する", () => {
 		const microformatEl = getMicroformatElement(youtubeArchivedHtml);
-		const { value, error } = parseMicroformat(microformatEl);
+		const { value, error } = parseYouTubeMicroformat(microformatEl);
 		if (error) {
 			throw new Error(`Parse failed: ${error.message}`);
 		}
@@ -97,7 +97,7 @@ describe("parseMicroformat", () => {
 
 	test("通常動画（非ライブ）のマイクロフォーマットを正しく解析する", () => {
 		const microformatEl = getMicroformatElement(youtubeNormalHtml);
-		const { value, error } = parseMicroformat(microformatEl);
+		const { value, error } = parseYouTubeMicroformat(microformatEl);
 		if (error) {
 			throw new Error(`Parse failed: ${error.message}`);
 		}
@@ -111,7 +111,7 @@ describe("parseMicroformat", () => {
 
 	test("scriptタグがない場合はエラーを返す", () => {
 		const mockElement = document.createElement("div");
-		const { value, error } = parseMicroformat(mockElement);
+		const { value, error } = parseYouTubeMicroformat(mockElement);
 		expect(error).toBeDefined();
 		expect(value).toBeUndefined();
 	});
@@ -121,7 +121,7 @@ describe("parseMicroformat", () => {
 		const script = document.createElement("script");
 		mockElement.appendChild(script);
 
-		const { value, error } = parseMicroformat(mockElement);
+		const { value, error } = parseYouTubeMicroformat(mockElement);
 		expect(error).toBeDefined();
 		expect(value).toBeUndefined();
 	});
@@ -132,7 +132,7 @@ describe("parseMicroformat", () => {
 		script.textContent = "{ invalid json }";
 		mockElement.appendChild(script);
 
-		const { value, error } = parseMicroformat(mockElement);
+		const { value, error } = parseYouTubeMicroformat(mockElement);
 		expect(error).toBeDefined();
 		expect(value).toBeUndefined();
 	});

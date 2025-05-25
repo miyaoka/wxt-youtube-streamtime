@@ -1,15 +1,16 @@
 import { debug, setDebugMode } from "@/utils/debug";
-import { parseMicroformat, timeToSec } from "@/utils/microformat";
+import { parseYouTubeMicroformat, timeToSec } from "@/utils/microformat";
 import { defineContentScript } from "wxt/utils/define-content-script";
 
-// HH:MM:SS
-const startTimeFormatter = new Intl.DateTimeFormat(undefined, {
+// 配信開始時刻表示用フォーマッター（例: 20:30:45）
+const streamStartTimeFormatter = new Intl.DateTimeFormat(undefined, {
 	hour: "2-digit",
 	minute: "2-digit",
 	second: "2-digit",
 });
-// ymd + weekday + time
-const originalDateFormatter = new Intl.DateTimeFormat(undefined, {
+
+// 元の配信時の日時表示用フォーマッター（例: 2024/03/15 金 20:30:45）
+const originalBroadcastDateTimeFormatter = new Intl.DateTimeFormat(undefined, {
 	year: "numeric",
 	month: "2-digit",
 	day: "2-digit",
@@ -23,130 +24,174 @@ export default defineContentScript({
 	matches: ["*://*.youtube.com/*"],
 	main() {
 		setDebugMode(true);
-		// add span for displaying original time
-		const originalTimeEl = document.createElement("span");
-		const startTimeEl = document.createElement("span");
-		let currentTimeObserver: MutationObserver | null = null;
 
-		function resetLiveTimer() {
-			originalTimeEl.textContent = "";
-			startTimeEl.textContent = "";
-			if (currentTimeObserver) {
-				currentTimeObserver.disconnect();
+		// 元の配信時の日時を表示するspan要素（アーカイブ動画用）
+		const originalBroadcastTimeDisplayElement = document.createElement("span");
+		// 配信開始時刻を表示するspan要素（ライブ・アーカイブ共通）
+		const streamStartTimeDisplayElement = document.createElement("span");
+		// 動画の再生時間変更を監視するオブザーバー
+		let videoTimeChangeObserver: MutationObserver | null = null;
+
+		/**
+		 * 時刻表示をリセットし、監視を停止する
+		 * 新しい動画に切り替わった際などに呼び出される
+		 */
+		function clearRealTimeDisplay() {
+			originalBroadcastTimeDisplayElement.textContent = "";
+			streamStartTimeDisplayElement.textContent = "";
+			if (videoTimeChangeObserver) {
+				videoTimeChangeObserver.disconnect();
 				debug("🕒👀 /end watch currentTime");
 			}
 		}
 
-		// setup live timer by using microformat data and current time
-		async function setupLiveTimer(el: Element) {
-			debug("🕒💥 setup live timer.");
-			resetLiveTimer();
-			const { value: microformat, error } = parseMicroformat(el);
-			debug("🕒 parse microformat data:", microformat);
+		/**
+		 * YouTube動画のマイクロフォーマットデータを解析し、
+		 * 配信開始時刻や実際の日時表示を設定する
+		 * @param microformatElement YouTubeのmicroformat要素
+		 */
+		async function setupRealTimeDisplay(microformatElement: Element) {
+			debug("🕒💥 リアルタイム表示を設定します");
+			clearRealTimeDisplay();
+			const { value: microformat, error } =
+				parseYouTubeMicroformat(microformatElement);
+			debug("🕒 マイクロフォーマットデータを解析しました:", microformat);
 			if (error) {
-				debug("🕒 error parsing microformat:", error);
+				debug("🕒 マイクロフォーマットの解析でエラーが発生しました:", error);
 				return;
 			}
-			const timeWrapper =
+
+			// YouTubeプレーヤーの時間表示要素を取得
+			const videoTimeDisplayWrapper =
 				document.querySelector<HTMLElement>(".ytp-time-wrapper");
-			if (!timeWrapper) return;
-			const timeCurrent =
-				timeWrapper.querySelector<HTMLElement>(".ytp-time-current");
-			if (!timeCurrent) return;
-			debug("🕒 time elements found.");
+			if (!videoTimeDisplayWrapper) return;
+			const currentVideoTimeElement =
+				videoTimeDisplayWrapper.querySelector<HTMLElement>(".ytp-time-current");
+			if (!currentVideoTimeElement) return;
+			debug("🕒 YouTube時間表示要素を見つけました");
 
-			if (!document.contains(originalTimeEl)) {
-				timeWrapper.appendChild(originalTimeEl);
-				debug("🕒 added originalTime el.");
+			// 配信時の実際の日時表示要素をDOMに追加
+			if (!document.contains(originalBroadcastTimeDisplayElement)) {
+				videoTimeDisplayWrapper.appendChild(
+					originalBroadcastTimeDisplayElement,
+				);
+				debug("🕒 配信時日時表示要素を追加しました");
 			}
-			if (!document.contains(startTimeEl)) {
-				timeWrapper.insertBefore(startTimeEl, timeWrapper.firstChild);
-				debug("🕒 added startTime el.");
+			// 配信開始時刻表示要素をDOMに追加
+			if (!document.contains(streamStartTimeDisplayElement)) {
+				videoTimeDisplayWrapper.insertBefore(
+					streamStartTimeDisplayElement,
+					videoTimeDisplayWrapper.firstChild,
+				);
+				debug("🕒 配信開始時刻表示要素を追加しました");
 			}
 
-			// not live
+			// 通常の動画（ライブ配信ではない）の場合は何もしない
 			if (!("publication" in microformat)) {
-				debug("🕒 [non-live video]");
+				debug("🕒 [通常の動画]");
 				return;
 			}
 			const publication = microformat.publication;
-			debug("🕒 has publication:", publication);
+			debug("🕒 配信情報を取得しました:", publication);
 
-			const startDate = new Date(publication.startDate);
+			const streamStartDate = new Date(publication.startDate);
 
-			// on live, only add the start time
+			// 現在配信中または配信予定の場合：配信開始時刻のみ表示
 			if (!("endDate" in publication)) {
-				const startTime = startTimeFormatter.format(startDate);
-				startTimeEl.textContent = `${startTime} + `;
-				debug("🕒 [live now or scheduled]", startDate);
+				const startTime = streamStartTimeFormatter.format(streamStartDate);
+				streamStartTimeDisplayElement.textContent = `${startTime} + `;
+				debug("🕒 [ライブ配信中または配信予定]", streamStartDate);
 				return;
 			}
 
-			// on ended, add the original time
+			// アーカイブ動画の場合：動画の再生時間に基づいて実際の日時を表示
 
-			// watch current time and update original time
-			currentTimeObserver = new MutationObserver((mutationsList) => {
-				debug("🕒 [archived live video] currentTime mutation:", mutationsList);
+			// 動画の現在時刻変更を監視し、元の配信時刻を更新
+			videoTimeChangeObserver = new MutationObserver((mutationsList) => {
+				debug("🕒 [アーカイブ動画] 再生時間が変更されました:", mutationsList);
 				for (const mutation of mutationsList) {
-					// When the time is updated, a node is added
+					// 時間が更新されると新しいノードが追加される
 					const addedNode = mutation.addedNodes[0];
 					if (!addedNode) continue;
 
-					// compute original time
-					const currentSec = timeToSec(addedNode.textContent ?? "");
-					const originalDate = new Date(
-						startDate.getTime() + currentSec * 1000,
+					// 現在の再生時間から元の配信時刻を計算
+					const currentVideoTimeInSeconds = timeToSec(
+						addedNode.textContent ?? "",
 					);
-					const formattedDate = originalDateFormatter.format(originalDate);
-					originalTimeEl.textContent = ` ( ${formattedDate} )`;
+					const originalBroadcastDate = new Date(
+						streamStartDate.getTime() + currentVideoTimeInSeconds * 1000,
+					);
+					const formattedDate = originalBroadcastDateTimeFormatter.format(
+						originalBroadcastDate,
+					);
+					originalBroadcastTimeDisplayElement.textContent = ` ( ${formattedDate} )`;
 				}
 			});
-			currentTimeObserver.observe(timeCurrent, {
+			videoTimeChangeObserver.observe(currentVideoTimeElement, {
 				childList: true,
 			});
-			debug("🕒 [archived live video] 👀start watch currentTime", timeCurrent);
+			debug(
+				"🕒 [アーカイブ動画] 👀時間変更監視を開始しました",
+				currentVideoTimeElement,
+			);
 		}
 
-		async function watchMicroformat(microformatEl: Element) {
-			// watch for script tag
+		/**
+		 * YouTubeのmicroformat要素の変更を監視し、
+		 * 新しいデータが読み込まれた際にリアルタイム表示を更新する
+		 * @param youTubeMicroformatElement YouTubeのmicroformat要素
+		 */
+		async function monitorMicroformatChanges(
+			youTubeMicroformatElement: Element,
+		) {
+			// script tagの変更を監視
 			const observer = new MutationObserver((mutationsList) => {
 				for (const mutation of mutationsList) {
 					if ((mutation.target as Element).tagName !== "SCRIPT") continue;
-					setupLiveTimer(microformatEl);
+					setupRealTimeDisplay(youTubeMicroformatElement);
 				}
 			});
-			observer.observe(microformatEl, {
+			observer.observe(youTubeMicroformatElement, {
 				childList: true,
 				subtree: true,
 			});
-			debug("🕒👀 start watch microformat node:", microformatEl);
+			debug(
+				"🕒👀 microformat要素の変更監視を開始しました:",
+				youTubeMicroformatElement,
+			);
 
-			// Initial execution
-			setupLiveTimer(microformatEl);
+			// 初期実行
+			setupRealTimeDisplay(youTubeMicroformatElement);
 		}
 
-		function init() {
-			debug("🕒💥 init");
-			// force display current time
+		/**
+		 * 拡張機能の初期化処理
+		 * YouTube動画プレーヤーの時間表示を強制的に表示し、
+		 * microformat要素を見つけて監視を開始する
+		 */
+		function initializeExtension() {
+			debug("🕒💥 拡張機能を初期化します");
+
+			// YouTube動画プレーヤーの現在時刻を強制的に表示
 			const style = document.createElement("style");
 			style.textContent =
 				".ytp-time-contents, .ytp-time-current { display: inline !important; }";
 			document.documentElement.appendChild(style);
 
-			const microformatEl = document.getElementById("microformat");
-			if (microformatEl) {
-				debug("🕒 found microformat node.");
-				watchMicroformat(microformatEl);
+			const youTubeMicroformatElement = document.getElementById("microformat");
+			if (youTubeMicroformatElement) {
+				debug("🕒 microformat要素を見つけました");
+				monitorMicroformatChanges(youTubeMicroformatElement);
 				return;
 			}
 
-			// watch body subtree for ytd-watch-flexy
+			// bodyのサブツリーでytd-watch-flexyを監視
 			const observer = new MutationObserver((mutationsList) => {
 				for (const mutation of mutationsList) {
 					const target: Element = mutation.target as Element;
 					if (target.tagName !== "YTD-WATCH-FLEXY") continue;
 
-					// ytd-watch-flexy has microformat node
+					// ytd-watch-flexyにmicroformat要素が含まれている
 					const microformatNode = Array.from(mutation.addedNodes).find(
 						(node) => {
 							return (node as Element).id === "microformat";
@@ -154,11 +199,11 @@ export default defineContentScript({
 					);
 					if (!microformatNode) continue;
 
-					// finish watching
+					// 監視を終了
 					observer.disconnect();
-					debug("🕒👀 found microformat node. /end watch document");
-					// start watching microformat node
-					watchMicroformat(microformatNode as Element);
+					debug("🕒👀 microformat要素を発見しました /end watch document");
+					// microformat要素の監視を開始
+					monitorMicroformatChanges(microformatNode as Element);
 					return;
 				}
 			});
@@ -166,9 +211,9 @@ export default defineContentScript({
 				childList: true,
 				subtree: true,
 			});
-			debug("🕒👀 start watch document");
+			debug("🕒👀 ドキュメント全体の監視を開始しました");
 		}
 
-		init();
+		initializeExtension();
 	},
 });

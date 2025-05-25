@@ -54,9 +54,18 @@ pnpm run build # or pnpm run build:firefox
 # Install dependencies
 pnpm install
 
+# Setup VSCode (recommended)
+# Copy shared settings to your personal settings
+cp .vscode/settings-shared.json .vscode/settings.json
+
 # Development with hot reload for Chrome (or Firefox)
 pnpm run dev # or pnpm run dev:firefox
 ```
+
+**VSCode Users:**
+
+1. Install the recommended extensions when prompted
+2. The shared settings will enable Biome as the default formatter
 
 ## How It Works
 

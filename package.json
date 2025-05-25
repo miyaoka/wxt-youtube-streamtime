@@ -1,22 +1,25 @@
 {
-  "name": "wxt-youtube-streamtime",
-  "description": "Display Actual Streaming Time for YouTube Live Archives",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "wxt",
-    "dev:firefox": "wxt -b firefox",
-    "build": "wxt build",
-    "build:firefox": "wxt build -b firefox",
-    "zip": "wxt zip",
-    "zip:firefox": "wxt zip -b firefox",
-    "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
-  },
-  "devDependencies": {
-    "@wxt-dev/auto-icons": "^1.0.2",
-    "typescript": "^5.5.4",
-    "wxt": "^0.19.1"
-  }
+	"name": "wxt-youtube-streamtime",
+	"description": "A browser extension that displays actual streaming time for YouTube live broadcasts and their archives.",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "wxt",
+		"dev:firefox": "wxt -b firefox",
+		"build": "wxt build",
+		"build:firefox": "wxt build -b firefox",
+		"zip": "wxt zip",
+		"zip:firefox": "wxt zip -b firefox",
+		"compile": "tsc --noEmit",
+		"postinstall": "wxt prepare",
+		"check": "biome check .",
+		"check:fix": "biome check --write ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@wxt-dev/auto-icons": "^1.0.2",
+		"typescript": "^5.5.4",
+		"wxt": "^0.19.1"
+	}
 }

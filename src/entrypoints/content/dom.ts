@@ -1,11 +1,10 @@
 import { debug } from "@/utils/debug";
-import type { VideoTimeElements } from "./types";
 
 /**
  * YouTube動画プレーヤーの時間表示関連要素を取得する
  * @returns 時間表示要素のオブジェクト。要素が見つからない場合はnull
  */
-export function getVideoTimeElements(): VideoTimeElements | null {
+export function getVideoTimeElements(): { wrapper: HTMLElement; current: HTMLElement } | null {
 	const wrapper = document.querySelector<HTMLElement>(".ytp-time-wrapper");
 	if (!wrapper) return null;
 	

@@ -6,11 +6,3 @@
 export function isElement(node: Node | null | undefined): node is Element {
 	return node !== null && node !== undefined && node.nodeType === Node.ELEMENT_NODE;
 }
-
-/**
- * YouTube動画の時間表示要素の型定義
- */
-export interface VideoTimeElements {
-	wrapper: HTMLElement;
-	current: HTMLElement;
-}

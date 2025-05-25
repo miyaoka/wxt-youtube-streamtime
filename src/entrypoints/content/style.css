@@ -1,0 +1,6 @@
+.ytp-live {
+	.ytp-time-contents,
+	.ytp-time-current {
+		display: inline !important;
+	}
+}

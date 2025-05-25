@@ -12,9 +12,13 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check ."
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@wxt-dev/auto-icons": "^1.0.2",
     "typescript": "^5.5.4",
     "wxt": "^0.19.1"

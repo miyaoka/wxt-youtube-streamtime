@@ -11,6 +11,8 @@ jobs:
     name: Biome Check
     runs-on: ubuntu-latest
     steps:
+      # リポジトリのチェックアウト
+      - uses: actions/checkout@v4
       # Bun環境の共通セットアップ
       - uses: ./.github/actions/setup-bun
       # Biomeによるコード品質チェック実行
@@ -21,6 +23,8 @@ jobs:
     name: TypeScript Check
     runs-on: ubuntu-latest
     steps:
+      # リポジトリのチェックアウト
+      - uses: actions/checkout@v4
       # Bun環境の共通セットアップ
       - uses: ./.github/actions/setup-bun
       # TypeScriptの型チェック実行

@@ -6,6 +6,22 @@ on:
   pull_request: # プルリクエスト作成・更新時にトリガー
 
 jobs:
+  # 変更されたファイルパスを検出
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      typescript: ${{ steps.changes.outputs.typescript }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            typescript:
+              - '**/*.ts'
+              - '**/*.tsx'
+              - 'tsconfig.json'
+
   # Biomeによるコード品質チェック（構文・スタイル・リント）
   biome-check:
     name: Biome Check
@@ -18,9 +34,11 @@ jobs:
       # Biomeによるコード品質チェック実行
       - run: bun run check
 
-  # TypeScriptの型チェック
+  # TypeScriptの型チェック（TypeScript関連ファイル変更時のみ実行）
   typecheck:
     name: TypeScript Check
+    needs: changes
+    if: ${{ needs.changes.outputs.typescript == 'true' }}
     runs-on: ubuntu-latest
     steps:
       # リポジトリのチェックアウト

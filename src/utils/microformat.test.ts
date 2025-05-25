@@ -1,14 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { timeToSec, parseMicroformat } from "./microformat";
-import youtubeLiveHtml from "../__fixtures__/youtube-live.html" with {
+import youtubeArchivedHtml from "../__fixtures__/youtube-archived.html" with {
 	type: "text",
 };
-import youtubeArchivedHtml from "../__fixtures__/youtube-archived.html" with {
+import youtubeLiveHtml from "../__fixtures__/youtube-live.html" with {
 	type: "text",
 };
 import youtubeNormalHtml from "../__fixtures__/youtube-normal.html" with {
 	type: "text",
 };
+import { parseMicroformat, timeToSec } from "./microformat";
 
 function getMicroformatElement(htmlContent: string): Element {
 	const parser = new DOMParser();

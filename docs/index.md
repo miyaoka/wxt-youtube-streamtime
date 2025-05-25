@@ -18,29 +18,29 @@ YouTube StreamTime 拡張機能は、YouTube のライブ配信とそのアー�
 <span class="ytp-time-wrapper">
   <div class="ytp-time-contents">
     <span class="ytp-time-clip-icon">...</span>
-    <!-- 非表示 -->
+    <!-- 🚫 非表示 -->
     <span class="ytp-time-current">2:16:29</span>
-    <!-- 非表示 -->
+    <!-- 🚫 非表示 -->
     <span class="ytp-time-separator"> / </span>
-    <!-- 非表示 -->
+    <!-- 🚫 非表示 -->
     <span class="ytp-time-duration">3:16:28</span>
   </div>
 </span>
 
 <!-- After（拡張機能による変更） -->
 <span class="ytp-time-wrapper">
-  <!-- ライブ用：配信開始時刻 -->
+  <!-- ➕ ライブ用：配信開始時刻 -->
   <span>12:00:39 + </span>
   <div class="ytp-time-contents">
     <span class="ytp-time-clip-icon">...</span>
-    <!-- 拡張機能により表示 -->
+    <!-- 💡 style上書きにより表示 -->
     <span class="ytp-time-current">2:41:47</span>
-    <!-- 非表示のまま -->
+    <!-- 🚫 非表示のまま -->
     <span class="ytp-time-separator"> / </span>
-    <!-- 非表示のまま -->
+    <!-- 🚫 非表示のまま -->
     <span class="ytp-time-duration">3:41:34</span>
   </div>
-  <!-- アーカイブ用：空要素 -->
+  <!-- ➕ アーカイブ用：空要素 -->
   <span></span>
 </span>
 ```
@@ -90,7 +90,7 @@ YouTube StreamTime 拡張機能は、YouTube のライブ配信とそのアー�
 
 <!-- After（拡張機能による変更） -->
 <span class="ytp-time-wrapper">
-  <!-- ライブ用：空要素 -->
+  <!-- ➕ ライブ用：空要素 -->
   <span></span>
   <div class="ytp-time-contents">
     <span class="ytp-time-clip-icon">...</span>
@@ -98,7 +98,7 @@ YouTube StreamTime 拡張機能は、YouTube のライブ配信とそのアー�
     <span class="ytp-time-separator"> / </span>
     <span class="ytp-time-duration">1:06:10</span>
   </div>
-  <!-- アーカイブ用：実配信時刻 -->
+  <!-- ➕ アーカイブ用：実配信時刻 -->
   <span> ( 2025/05/24(土) 17:35:39 )</span>
 </span>
 ```

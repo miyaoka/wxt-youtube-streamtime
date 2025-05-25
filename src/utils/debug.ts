@@ -2,7 +2,7 @@ let isDebugMode = import.meta.env.DEV;
 
 export function debug(...args: unknown[]): void {
 	if (isDebugMode) {
-		console.log(...args);
+		console.info(...args);
 	}
 }
 

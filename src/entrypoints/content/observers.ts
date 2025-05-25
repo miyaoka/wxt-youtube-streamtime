@@ -1,4 +1,4 @@
-import { isElement } from "./types";
+import { isElement } from "@/utils/types";
 
 /**
  * microformat要素内のSCRIPTタグ変更を監視するObserverを生成する

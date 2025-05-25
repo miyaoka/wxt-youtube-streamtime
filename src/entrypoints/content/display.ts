@@ -1,9 +1,9 @@
 import { debug } from "@/utils/debug";
-import { timeToSec } from "@/utils/microformat";
 import {
 	originalBroadcastDateTimeFormatter,
 	streamStartTimeFormatter,
 } from "./formatters";
+import { timeToSec } from "./parser";
 
 /**
  * ライブ配信用の開始時刻表示を設定する

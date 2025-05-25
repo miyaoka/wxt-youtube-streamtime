@@ -1,4 +1,4 @@
-import { type Result, tryCatch } from "./result";
+import { type Result, tryCatch } from "@/utils/result";
 
 /**
  * YouTubeマイクロフォーマットの基本的な共通フィールド

@@ -3,6 +3,11 @@ import { parseYouTubeMicroformat, timeToSec } from "@/utils/microformat";
 import { defineContentScript } from "wxt/utils/define-content-script";
 import "./style.css";
 
+// 型ガード関数
+function isElement(node: Node | null | undefined): node is Element {
+	return node !== null && node !== undefined && node.nodeType === Node.ELEMENT_NODE;
+}
+
 // 配信開始時刻表示用フォーマッター（例: 20:30:45）
 const streamStartTimeFormatter = new Intl.DateTimeFormat(undefined, {
 	hour: "2-digit",
@@ -148,7 +153,8 @@ export default defineContentScript({
 			// script tagの変更を監視
 			const observer = new MutationObserver((mutationsList) => {
 				for (const mutation of mutationsList) {
-					if ((mutation.target as Element).tagName !== "SCRIPT") continue;
+					const target = mutation.target;
+					if (!isElement(target) || target.tagName !== "SCRIPT") continue;
 					setupRealTimeDisplay(youTubeMicroformatElement);
 				}
 			});
@@ -183,22 +189,22 @@ export default defineContentScript({
 			// bodyのサブツリーでytd-watch-flexyを監視
 			const observer = new MutationObserver((mutationsList) => {
 				for (const mutation of mutationsList) {
-					const target: Element = mutation.target as Element;
-					if (target.tagName !== "YTD-WATCH-FLEXY") continue;
+					const target = mutation.target;
+					if (!isElement(target) || target.tagName !== "YTD-WATCH-FLEXY") continue;
 
 					// ytd-watch-flexyにmicroformat要素が含まれている
 					const microformatNode = Array.from(mutation.addedNodes).find(
 						(node) => {
-							return (node as Element).id === "microformat";
+							return isElement(node) && node.id === "microformat";
 						},
 					);
-					if (!microformatNode) continue;
+					if (!microformatNode || !isElement(microformatNode)) continue;
 
 					// 監視を終了
 					observer.disconnect();
 					debug("🕒👀 microformat要素を発見しました /end watch document");
 					// microformat要素の監視を開始
-					monitorMicroformatChanges(microformatNode as Element);
+					monitorMicroformatChanges(microformatNode);
 					return;
 				}
 			});

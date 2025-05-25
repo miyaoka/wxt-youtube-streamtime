@@ -1,5 +1,6 @@
-import { debug } from "@/utils/debug";
+import { debug, setDebugMode } from "@/utils/debug";
 import { parseMicroformat, timeToSec } from "@/utils/microformat";
+import { defineContentScript } from "wxt/utils/define-content-script";
 
 // HH:MM:SS
 const startTimeFormatter = new Intl.DateTimeFormat(undefined, {

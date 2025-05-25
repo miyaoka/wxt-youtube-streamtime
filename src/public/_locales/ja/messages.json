@@ -1,8 +1,8 @@
 {
-  "name": {
-    "message": "YouTube StreamTime"
-  },
-  "desc": {
-    "message": "YouTubeライブアーカイブの実際の配信時刻を表示"
-  }
+	"name": {
+		"message": "YouTube StreamTime"
+	},
+	"desc": {
+		"message": "YouTubeライブアーカイブの実際の配信時刻を表示"
+	}
 }

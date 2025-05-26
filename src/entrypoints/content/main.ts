@@ -95,7 +95,8 @@ async function setupRealTimeDisplay(microformatElement: Element) {
 	debug("🕒 YouTube時間表示要素を見つけました");
 
 	addDisplayElements(
-		elements.wrapper,
+		elements.contents,
+		elements.current,
 		originalBroadcastTimeDisplayElement,
 		streamStartTimeDisplayElement,
 	);

@@ -61,6 +61,13 @@ bun run build # or bun run build:firefox
 bun run dev # or bun run dev:firefox
 ```
 
+### Development Extension Installation
+
+1. Run the development build command above
+2. Open your browser's extension management page
+3. Enable "Developer mode"
+4. Click "Load unpacked" and select the `.output/chrome-mv3-dev/` directory (or `.output/firefox-mv2-dev/` for Firefox)
+
 **VSCode Users:**
 
 1. Install the recommended extensions when prompted

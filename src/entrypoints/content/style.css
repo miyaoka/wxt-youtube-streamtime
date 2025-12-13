@@ -1,6 +1,7 @@
 .ytp-live {
 	.ytp-time-contents,
 	.ytp-time-current {
+		/* biome-ignore lint/complexity/noImportantStyles: YouTube のスタイルを上書きするため必要 */
 		display: inline !important;
 	}
 }

@@ -1,4 +1,4 @@
-import { describe, expect, mock, spyOn, test } from "bun:test";
+import { describe, expect, spyOn, test } from "bun:test";
 import { debug, setDebugMode } from "./debug";
 
 describe("debug", () => {

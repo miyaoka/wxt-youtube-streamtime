@@ -8,9 +8,9 @@ async function loadHtmlContent(bundle: { index: string }): Promise<string> {
 	return Bun.file(bundle.index).text();
 }
 
-async function getMicroformatElement(
-	bundle: { index: string },
-): Promise<Element> {
+async function getMicroformatElement(bundle: {
+	index: string;
+}): Promise<Element> {
 	const htmlContent = await loadHtmlContent(bundle);
 	const parser = new DOMParser();
 	const doc = parser.parseFromString(htmlContent, "text/html");
@@ -75,7 +75,9 @@ describe("parseYouTubeMicroformat", () => {
 	});
 
 	test("アーカイブ済みライブ配信のマイクロフォーマットを正しく解析する", async () => {
-		const microformatEl = await getMicroformatElement(youtubeArchivedHtmlBundle);
+		const microformatEl = await getMicroformatElement(
+			youtubeArchivedHtmlBundle,
+		);
 		const { value, error } = parseYouTubeMicroformat(microformatEl);
 		if (error) {
 			throw new Error(`Parse failed: ${error.message}`);

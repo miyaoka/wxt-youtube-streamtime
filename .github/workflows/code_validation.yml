@@ -21,6 +21,8 @@ jobs:
               - '**/*.ts'
               - '**/*.tsx'
               - 'tsconfig.json'
+              - 'package.json'
+              - 'bun.lock'
 
   # Biomeによるコード品質チェック（構文・スタイル・リント）
   biome-check:

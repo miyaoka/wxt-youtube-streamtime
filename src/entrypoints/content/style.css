@@ -1,7 +1,30 @@
-.ytp-live {
-	.ytp-time-contents,
-	.ytp-time-current {
-		/* biome-ignore lint/complexity/noImportantStyles: YouTube のスタイルを上書きするため必要 */
-		display: inline !important;
+/* biome-ignore-all lint/complexity/noImportantStyles: YouTube のスタイルを上書きするため必要 */
+
+/*
+YouTube プレーヤーの時間表示 DOM 構造（docs/sample 参照）:
+div.ytp-time-display（ライブ時に .ytp-live が付与）
+  ├── div.ytp-time-wrapper
+  │     ├── div.ytp-time-contents（ライブ時に display:none）
+  │     │     ├── span.ytp-time-clip-icon（クリップ時のみ表示）
+  │     │     ├── span.ytp-time-current (0:12)
+  │     │     ├── span.ytp-time-separator (/)
+  │     │     └── span.ytp-time-duration (3:45)
+  │     └── button.ytp-live-badge
+  ├── span.ytp-clip-watch-full-video-button-separator
+  └── span.ytp-clip-watch-full-video-button
+*/
+
+.ytp-time-display.ytp-live {
+	.ytp-time-wrapper {
+		display: flex !important;
+		gap: 6px;
+		.ytp-time-contents {
+			display: block !important;
+			/* ライブ中は duration が確定していないため separator と共に非表示 */
+			.ytp-time-separator,
+			.ytp-time-duration {
+				display: none !important;
+			}
+		}
 	}
 }

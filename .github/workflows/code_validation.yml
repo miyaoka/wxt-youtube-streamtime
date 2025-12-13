@@ -12,8 +12,8 @@ jobs:
     outputs:
       typescript: ${{ steps.changes.outputs.typescript }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3
         id: changes
         with:
           filters: |
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # リポジトリのチェックアウト
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       # Bun環境の共通セットアップ
       - uses: ./.github/actions/setup-bun
       # Biomeによるコード品質チェック実行
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # リポジトリのチェックアウト
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       # Bun環境の共通セットアップ
       - uses: ./.github/actions/setup-bun
       # TypeScriptの型チェック実行
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # リポジトリのチェックアウト
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       # Bun環境の共通セットアップ
       - uses: ./.github/actions/setup-bun
       # テスト実行

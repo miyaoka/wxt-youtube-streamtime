@@ -1,0 +1,5 @@
+pre-commit:
+  jobs:
+    - name: biome
+      glob: "src/**/*.{js,ts,tsx,json,css}"
+      run: bun run check:fix {staged_files} && git add {staged_files}

@@ -1,16 +1,17 @@
 import { describe, expect, test } from "bun:test";
-import youtubeArchivedHtml from "./__fixtures__/youtube-archived.html" with {
-	type: "text",
-};
-import youtubeLiveHtml from "./__fixtures__/youtube-live.html" with {
-	type: "text",
-};
-import youtubeNormalHtml from "./__fixtures__/youtube-normal.html" with {
-	type: "text",
-};
+import youtubeArchivedHtmlBundle from "./__fixtures__/youtube-archived.html";
+import youtubeLiveHtmlBundle from "./__fixtures__/youtube-live.html";
+import youtubeNormalHtmlBundle from "./__fixtures__/youtube-normal.html";
 import { parseYouTubeMicroformat, timeToSec } from "./parser";
 
-function getMicroformatElement(htmlContent: string): Element {
+async function loadHtmlContent(bundle: { index: string }): Promise<string> {
+	return Bun.file(bundle.index).text();
+}
+
+async function getMicroformatElement(
+	bundle: { index: string },
+): Promise<Element> {
+	const htmlContent = await loadHtmlContent(bundle);
 	const parser = new DOMParser();
 	const doc = parser.parseFromString(htmlContent, "text/html");
 	const microformatEl = doc.getElementById("microformat");
@@ -52,8 +53,8 @@ describe("timeToSec", () => {
 });
 
 describe("parseYouTubeMicroformat", () => {
-	test("ライブ配信中のマイクロフォーマットを正しく解析する", () => {
-		const microformatEl = getMicroformatElement(youtubeLiveHtml);
+	test("ライブ配信中のマイクロフォーマットを正しく解析する", async () => {
+		const microformatEl = await getMicroformatElement(youtubeLiveHtmlBundle);
 		const { value, error } = parseYouTubeMicroformat(microformatEl);
 		if (error) {
 			throw new Error(`Parse failed: ${error.message}`);
@@ -73,8 +74,8 @@ describe("parseYouTubeMicroformat", () => {
 		}
 	});
 
-	test("アーカイブ済みライブ配信のマイクロフォーマットを正しく解析する", () => {
-		const microformatEl = getMicroformatElement(youtubeArchivedHtml);
+	test("アーカイブ済みライブ配信のマイクロフォーマットを正しく解析する", async () => {
+		const microformatEl = await getMicroformatElement(youtubeArchivedHtmlBundle);
 		const { value, error } = parseYouTubeMicroformat(microformatEl);
 		if (error) {
 			throw new Error(`Parse failed: ${error.message}`);
@@ -95,8 +96,8 @@ describe("parseYouTubeMicroformat", () => {
 		expect(publication.endDate).toBe("2023-01-01T01:00:00Z");
 	});
 
-	test("通常動画（非ライブ）のマイクロフォーマットを正しく解析する", () => {
-		const microformatEl = getMicroformatElement(youtubeNormalHtml);
+	test("通常動画（非ライブ）のマイクロフォーマットを正しく解析する", async () => {
+		const microformatEl = await getMicroformatElement(youtubeNormalHtmlBundle);
 		const { value, error } = parseYouTubeMicroformat(microformatEl);
 		if (error) {
 			throw new Error(`Parse failed: ${error.message}`);

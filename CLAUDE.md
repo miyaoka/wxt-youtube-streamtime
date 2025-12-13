@@ -66,3 +66,7 @@ bun run test            # テスト実行
 
 - Chrome（Manifest V3）
 - Firefox（Manifest V2）
+
+## ドキュメント
+
+- [実装仕様・YouTube DOM 構造](docs/index.md)

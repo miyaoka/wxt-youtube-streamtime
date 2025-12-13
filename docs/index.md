@@ -9,37 +9,37 @@ YouTube StreamTime 拡張機能は、YouTube のライブ配信とそのアー�
 - **ライブ配信**: 配信開始時刻を固定表示し、YouTube 側の時間表示と視覚的に連結
 - **アーカイブ配信**: 再生位置に対応する実際の配信時刻を動的表示
 
-## ライブ配信での実装詳細
+## YouTube プレーヤーの時間表示 DOM 構造
 
-### DOM 構造の変化
-
-```html
-<!-- Before（ライブ配信デフォルト） -->
-<div class="ytp-time-contents">
-  <span class="ytp-time-clip-icon">...</span>
-  <!-- 🚫 ↓ 非表示 -->
-  <span class="ytp-time-current">2:16:29</span>
-  <!-- 🚫 ↓ 非表示 -->
-  <span class="ytp-time-separator"> / </span>
-  <!-- 🚫 ↓ 非表示 -->
-  <span class="ytp-time-duration">3:16:28</span>
-</div>
-
-<!-- After（拡張機能による変更） -->
-<div class="ytp-time-contents">
-  <span class="ytp-time-clip-icon">...</span>
-  <!-- ➕ ↓ ライブ用：配信開始時刻 -->
-  <span>12:00:39 + </span>
-  <!-- 💡 ↓ style上書きにより表示 -->
-  <span class="ytp-time-current">2:41:47</span>
-  <!-- 🚫 ↓ 非表示のまま -->
-  <span class="ytp-time-separator"> / </span>
-  <!-- 🚫 ↓ 非表示のまま -->
-  <span class="ytp-time-duration">3:41:34</span>
-  <!-- ➕ ↓ アーカイブ用：空要素 -->
-  <span></span>
-</div>
 ```
+div.ytp-time-display（ライブ時に .ytp-live が付与）
+  ├── div.ytp-time-wrapper
+  │     ├── div.ytp-time-contents（ライブ時に display:none）
+  │     │     ├── span.ytp-time-clip-icon（クリップ時のみ表示）
+  │     │     ├── span.ytp-time-current (0:12)
+  │     │     ├── span.ytp-time-separator (/)
+  │     │     └── span.ytp-time-duration (3:45)
+  │     └── button.ytp-live-badge
+  ├── span.ytp-clip-watch-full-video-button-separator
+  └── span.ytp-clip-watch-full-video-button
+```
+
+詳細な HTML は `docs/sample` を参照。
+
+### YouTube 側のスタイル
+
+- **アーカイブ時**: `.ytp-time-contents` は `display: block`
+- **ライブ時**: `.ytp-time-contents` は `display: none`
+
+### 拡張機能によるスタイル上書き
+
+ライブ時に `.ytp-time-contents` を表示させ、不要な要素を非表示にします：
+
+- `.ytp-time-wrapper` を `display: flex` にして `.ytp-live-badge` との間隔を調整
+- `.ytp-time-contents` を `display: block` で強制表示
+- `.ytp-time-separator` と `.ytp-time-duration` を非表示（ライブ中は duration が確定していないため）
+
+## ライブ配信での実装詳細
 
 ### 表示形式
 
@@ -56,44 +56,21 @@ YouTube StreamTime 拡張機能は、YouTube のライブ配信とそのアー�
 
 **主な変化**:
 
-- 配信開始時刻 `<span>12:00:39 + </span>` を `.ytp-time-contents` の直前に追加（ライブ用）
+- 拡張機能で `.ytp-time-contents` を `display: block` に上書きして表示
+- 配信開始時刻 `<span>12:00:39 + </span>` を `.ytp-time-current` の直前に追加（ライブ用）
 - 末尾に空の `<span></span>` を追加（アーカイブ用要素、動画遷移時の DOM 再利用のため）
-- CSS 上書きにより `.ytp-time-current` のみを表示
+- `.ytp-time-separator` と `.ytp-time-duration` は拡張機能で非表示
 
 ### 実装の仕組み
 
 拡張機能は以下の方法でライブ配信の時刻表示を実現します：
 
-1. **microformat からの配信開始時刻取得**: YouTube の `#microformat` 要素から `publication.startDate` を取得・解析
-2. **配信開始時刻を追加**: `.ytp-time-contents`の**直前**に固定の配信開始時刻を挿入
-3. **CSS で部分表示**: `.ytp-time-current`のみを表示し、区切り文字と総時間は非表示のまま
-4. **視覚的連結**: 拡張機能の固定要素と YouTube 側の動的要素が連続して表示
+- **microformat からの配信開始時刻取得**: YouTube の `#microformat` 要素から `publication.startDate` を取得・解析
+- **配信開始時刻を追加**: `.ytp-time-current` の**直前**に固定の配信開始時刻を挿入
+- **CSS で部分表示**: `.ytp-time-contents` を表示し、区切り文字と総時間は非表示
+- **視覚的連結**: 拡張機能の固定要素と YouTube 側の動的要素が連続して表示
 
 ## アーカイブ配信での実装詳細
-
-### DOM 構造の変化
-
-```html
-<!-- Before（アーカイブ配信デフォルト） -->
-<div class="ytp-time-contents">
-  <span class="ytp-time-clip-icon">...</span>
-  <span class="ytp-time-current">16:56</span>
-  <span class="ytp-time-separator"> / </span>
-  <span class="ytp-time-duration">1:06:10</span>
-</div>
-
-<!-- After（拡張機能による変更） -->
-<div class="ytp-time-contents">
-  <span class="ytp-time-clip-icon">...</span>
-  <!-- ➕ ↓ ライブ用：空要素 -->
-  <span></span>
-  <span class="ytp-time-current">16:56</span>
-  <span class="ytp-time-separator"> / </span>
-  <span class="ytp-time-duration">1:06:10</span>
-  <!-- ➕ ↓ アーカイブ用：実配信時刻 -->
-  <span> ( 2025/05/24(土) 17:35:39 )</span>
-</div>
-```
 
 ### 表示形式
 
@@ -108,19 +85,19 @@ YouTube StreamTime 拡張機能は、YouTube のライブ配信とそのアー�
 
 **主な変化**:
 
-- 先頭に空の `<span></span>` を追加（ライブ用要素、動画遷移時の DOM 再利用のため）
-- 実配信時刻 `<span> ( 2025/05/24(土) 17:35:39 )</span>` を `.ytp-time-wrapper` の末尾に追加（アーカイブ用）
+- `.ytp-time-current` の直前に空の `<span></span>` を追加（ライブ用要素、動画遷移時の DOM 再利用のため）
+- 実配信時刻 `<span> ( 2025/05/24(土) 17:35:39 )</span>` を `.ytp-time-contents` の末尾に追加（アーカイブ用）
 - 元の時間表示はそのまま保持
 
 ### 実装の仕組み
 
 アーカイブ動画では、MutationObserver を使用して再生時間の変更を監視し、実配信時刻を計算・表示します：
 
-1. **microformat からの配信開始時刻取得**: YouTube の `#microformat` 要素から `publication.startDate` を取得・解析
-2. **YouTube が`.ytp-time-current`要素を更新**
-3. **MutationObserver が変更を検知**
-4. **拡張機能が配信開始時刻 + 再生時間で実配信時刻を計算**
-5. **実配信時刻の表示を更新**
+- **microformat からの配信開始時刻取得**: YouTube の `#microformat` 要素から `publication.startDate` を取得・解析
+- **YouTube が`.ytp-time-current`要素を更新**
+- **MutationObserver が変更を検知**
+- **拡張機能が配信開始時刻 + 再生時間で実配信時刻を計算**
+- **実配信時刻の表示を更新**
 
 ## DOM 要素の再利用について
 

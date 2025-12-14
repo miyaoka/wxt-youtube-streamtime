@@ -6,6 +6,24 @@ import {
 import { timeToSec } from "./parser";
 
 /**
+ * 再生時間から実際の配信時刻を計算する
+ * @param currentTimeInSeconds 現在の再生位置（秒）。マイナスの場合は残り時間
+ * @param streamStartDate 配信開始日時
+ * @param streamEndDate 配信終了日時
+ * @returns 実際の配信時刻
+ */
+export function calculateBroadcastDate(
+	currentTimeInSeconds: number,
+	streamStartDate: Date,
+	streamEndDate: Date,
+): Date {
+	// マイナス表示（残り時間）の場合は終了時刻を基準に計算
+	// 通常表示（経過時間）の場合は開始時刻を基準に計算
+	const baseDate = currentTimeInSeconds < 0 ? streamEndDate : streamStartDate;
+	return new Date(baseDate.getTime() + currentTimeInSeconds * 1000);
+}
+
+/**
  * ライブ配信用の開始時刻表示を設定する
  * 配信予定の場合はYouTube側で時間表示UIが非表示になるため、
  * 配信中と区別せず同じ処理を行っても問題ない
@@ -25,11 +43,13 @@ export function setupLiveDisplay(
  * アーカイブ動画用の時刻変更監視Observerを生成する
  * 再生時間の変更を監視し、実際の配信時刻を計算・表示する
  * @param streamStartDate 配信開始日時
+ * @param streamEndDate 配信終了日時
  * @param originalElement 実配信時刻を表示するHTML要素
  * @returns 設定済みのMutationObserver
  */
 export function createArchiveTimeObserver(
 	streamStartDate: Date,
+	streamEndDate: Date,
 	originalElement: HTMLElement,
 ): MutationObserver {
 	return new MutationObserver((mutationsList) => {
@@ -39,8 +59,10 @@ export function createArchiveTimeObserver(
 			if (!addedNode) continue;
 
 			const currentVideoTimeInSeconds = timeToSec(addedNode.textContent ?? "");
-			const originalBroadcastDate = new Date(
-				streamStartDate.getTime() + currentVideoTimeInSeconds * 1000,
+			const originalBroadcastDate = calculateBroadcastDate(
+				currentVideoTimeInSeconds,
+				streamStartDate,
+				streamEndDate,
 			);
 			const formattedDate = originalBroadcastDateTimeFormatter.format(
 				originalBroadcastDate,

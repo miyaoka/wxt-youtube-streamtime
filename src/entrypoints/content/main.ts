@@ -118,8 +118,10 @@ async function setupRealTimeDisplay(microformatElement: Element) {
 	}
 
 	// アーカイブ動画の場合：動画の再生時間に基づいて実際の日時を表示
+	const streamEndDate = new Date(publication.endDate);
 	videoTimeChangeObserver = createArchiveTimeObserver(
 		streamStartDate,
+		streamEndDate,
 		originalBroadcastTimeDisplayElement,
 	);
 	videoTimeChangeObserver.observe(elements.current, {

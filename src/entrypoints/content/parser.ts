@@ -103,12 +103,19 @@ export function parseYouTubeMicroformat(
 
 /**
  * 時間文字列（HH:MM:SS形式）を秒数に変換する
- * @param timeString 時間文字列（例: "1:23:45" または "5:30"）
- * @returns 秒数
+ * マイナス記号付きの残り時間表示にも対応
+ * @param timeString 時間文字列（例: "1:23:45", "5:30", "-0:30"）
+ * @returns 秒数（マイナス時間の場合は負の値）
  */
 export function timeToSec(timeString: string): number {
-	const [seconds, minutes, hours] = timeString.split(":").reverse();
-	return (
-		Number(hours ?? 0) * 3600 + Number(minutes ?? 0) * 60 + Number(seconds ?? 0)
-	);
+	const isNegative = timeString.startsWith("-");
+	const normalizedTimeString = isNegative ? timeString.slice(1) : timeString;
+
+	const [seconds, minutes, hours] = normalizedTimeString.split(":").reverse();
+	const absoluteSeconds =
+		Number(hours ?? 0) * 3600 +
+		Number(minutes ?? 0) * 60 +
+		Number(seconds ?? 0);
+
+	return isNegative ? -absoluteSeconds : absoluteSeconds;
 }

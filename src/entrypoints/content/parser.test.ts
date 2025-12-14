@@ -50,6 +50,13 @@ describe("timeToSec", () => {
 	test("数値でない文字列の場合はNaNを返す", () => {
 		expect(timeToSec("abc")).toBeNaN();
 	});
+
+	test("マイナス記号付きの時間文字列（残り時間）を正しく変換する", () => {
+		expect(timeToSec("-1:00")).toBe(-60);
+		expect(timeToSec("-2:00:00")).toBe(-7200);
+		expect(timeToSec("-0:30")).toBe(-30);
+		expect(timeToSec("-1:23:45")).toBe(-5025);
+	});
 });
 
 describe("parseYouTubeMicroformat", () => {

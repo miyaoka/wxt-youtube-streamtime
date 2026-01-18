@@ -7,7 +7,7 @@ runs:
     - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3
     # Bunの依存関係キャッシュで高速化
     - name: Cache Bun dependencies
-      uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5
+      uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5
       with:
         path: ~/.bun/install/cache
         key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}

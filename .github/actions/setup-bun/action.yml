@@ -4,7 +4,7 @@ runs:
   using: "composite"
   steps:
     # mise経由でBunの適切なバージョンをセットアップ
-    - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3
+    - uses: jdx/mise-action@6d1e696aa24c1aa1bcc1adea0212707c71ab78a8 # v3
     # Bunの依存関係キャッシュで高速化
     - name: Cache Bun dependencies
       uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5

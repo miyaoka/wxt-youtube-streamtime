@@ -26,6 +26,6 @@
     "@wxt-dev/auto-icons": "1.1.0",
     "lefthook": "2.1.0",
     "typescript": "5.9.3",
-    "wxt": "0.20.13"
+    "wxt": "0.20.14"
   }
 }

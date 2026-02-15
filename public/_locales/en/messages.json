@@ -1,8 +1,8 @@
 {
 	"name": {
-		"message": "YouTube StreamTime"
+		"message": "StreamTime for YouTube"
 	},
 	"desc": {
-		"message": "Displays actual streaming time for YouTube live broadcasts and their archives"
+		"message": "Shows the original broadcast time for YouTube live streams and archived videos"
 	}
 }

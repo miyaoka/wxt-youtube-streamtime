@@ -1,10 +1,10 @@
-# YouTube StreamTime Web Extension
+# StreamTime for YouTube Web Extension
 
 A browser extension that displays actual streaming time for YouTube live broadcasts and their archives.
 
 ## Overview
 
-YouTube StreamTime enhances your YouTube viewing experience by displaying the real broadcast time for live streams and their archived videos. Instead of just seeing the video timeline, you can see exactly when something happened during the original live broadcast.
+StreamTime for YouTube enhances your YouTube viewing experience by displaying the real broadcast time for live streams and their archived videos. Instead of just seeing the video timeline, you can see exactly when something happened during the original live broadcast.
 
 ## Features
 

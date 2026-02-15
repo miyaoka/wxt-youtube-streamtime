@@ -1,4 +1,4 @@
-# YouTube StreamTime Extension
+# StreamTime for YouTube Extension
 
 YouTube ライブ配信の実際の放送時刻を表示するブラウザ拡張機能
 

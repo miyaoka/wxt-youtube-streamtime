@@ -1,8 +1,8 @@
 {
 	"name": {
-		"message": "YouTube StreamTime"
+		"message": "StreamTime for YouTube"
 	},
 	"desc": {
-		"message": "YouTubeライブ配信とそのアーカイブの実際の配信時刻を表示"
+		"message": "YouTubeライブ配信やアーカイブ動画で、実際の放送時刻をプレーヤー上に表示します"
 	}
 }

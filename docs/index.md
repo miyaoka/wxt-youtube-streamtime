@@ -1,8 +1,8 @@
-# YouTube StreamTime 実装仕様
+# StreamTime for YouTube 実装仕様
 
 ## 概要
 
-YouTube StreamTime 拡張機能は、YouTube のライブ配信とそのアーカイブ動画において、プレイヤーの時間表示部分（`.ytp-time-wrapper`）を書き換えることで、実際の配信時刻を表示します。
+StreamTime for YouTube 拡張機能は、YouTube のライブ配信とそのアーカイブ動画において、プレイヤーの時間表示部分（`.ytp-time-wrapper`）を書き換えることで、実際の配信時刻を表示します。
 
 この拡張機能では以下の変更を行います：
 

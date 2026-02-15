@@ -1,4 +1,4 @@
-import { debug, setDebugMode } from "@/utils/debug";
+import { debug } from "@/utils/debug";
 import { createArchiveTimeObserver, setupLiveDisplay } from "./display";
 import { addDisplayElements, getVideoTimeElements } from "./dom";
 import {
@@ -144,6 +144,5 @@ function clearRealTimeDisplay() {
 }
 
 export function main() {
-	setDebugMode(true);
 	initializeExtension();
 }

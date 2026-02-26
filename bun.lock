@@ -8,7 +8,7 @@
         "@biomejs/biome": "2.4.4",
         "@happy-dom/global-registrator": "20.7.0",
         "@types/bun": "1.3.9",
-        "@wxt-dev/auto-icons": "1.1.0",
+        "@wxt-dev/auto-icons": "1.1.1",
         "bumpp": "10.4.1",
         "lefthook": "2.1.1",
         "typescript": "5.9.3",
@@ -259,7 +259,7 @@
 
     "@webext-core/match-patterns": ["@webext-core/match-patterns@1.0.3", "", {}, "sha512-NY39ACqCxdKBmHgw361M9pfJma8e4AZo20w9AY+5ZjIj1W2dvXC8J31G5fjfOGbulW9w4WKpT8fPooi0mLkn9A=="],
 
-    "@wxt-dev/auto-icons": ["@wxt-dev/auto-icons@1.1.0", "", { "dependencies": { "defu": "^6.1.4", "fs-extra": "^11.3.0", "sharp": "^0.34.1" }, "peerDependencies": { "wxt": ">=0.19.0" } }, "sha512-lDFZjDbrY5gDaapUuUOYTPudE88oB3Z7rTdg0N7iq2WIWga1h0bhzCJDaqNqMvPN2DCYvHFfA0cnqA12vEJjiA=="],
+    "@wxt-dev/auto-icons": ["@wxt-dev/auto-icons@1.1.1", "", { "dependencies": { "defu": "^6.1.4", "fs-extra": "^11.3.3", "sharp": "^0.34.5" }, "peerDependencies": { "wxt": ">=0.19.0" } }, "sha512-Dw2NKK51CCFurE95NptiEheuxVtkeX4vTQwEbhCkFVP9LzXNxOZTX9C9NAsGe6OfahelXlS51TW74hTSzsMILw=="],
 
     "@wxt-dev/browser": ["@wxt-dev/browser@0.1.37", "", { "dependencies": { "@types/filesystem": "*", "@types/har-format": "*" } }, "sha512-I32XWCNRy2W6UgbaVXz8BHGBGtm8urGRRBrcNLagUBXTrBi7wCE6zWePUvvK+nUl7qUCZ7iQ1ufdP0c1DEWisw=="],
 

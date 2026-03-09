@@ -12,7 +12,7 @@ StreamTime for YouTube enhances your YouTube viewing experience by displaying th
 
 Shows the actual start time of the stream with real-time elapsed duration.
 
-![live](https://github.com/user-attachments/assets/0c972bda-72db-430c-8b05-844edd2dab8d)
+<img width="640" height="400" alt="live" src="https://github.com/user-attachments/assets/8f2d2ad6-dcd9-405c-b77b-4477f47302af" />
 
 **Display format:** `[Start time] + [Elapsed time]`
 
@@ -20,7 +20,7 @@ Shows the actual start time of the stream with real-time elapsed duration.
 
 Displays the exact broadcast timestamp corresponding to your current playback position.
 
-![archive](https://github.com/user-attachments/assets/d6ef75e8-37f5-4e47-8de3-c9e6e6cb884b)
+<img width="640" height="400" alt="archive" src="https://github.com/user-attachments/assets/24d45607-da65-4f27-b1d1-5a8ee5c0805e" />
 
 **Display format:** `[Current position] / [Total duration] ( [Original broadcast timestamp] )`
 

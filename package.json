@@ -26,7 +26,7 @@
     "@types/bun": "1.4.2",
     "@wxt-dev/auto-icons": "1.1.2",
     "bumpp": "12.3.0",
-    "lefthook": "2.1.17",
+    "lefthook": "2.2.0",
     "typescript": "7.0.2",
     "wxt": "0.21.4"
   }
